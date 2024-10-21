@@ -21,6 +21,10 @@
         File Select / Commit
       </div>
     </button>
+
+    <div class="footer">
+      If you can not upload, please allow cors demo <a href="https://cors-anywhere.herokuapp.com/corsdemo">here</a>, and click "Request temporary access to the demo server"
+    </div>
     <!-- 添加 Toast 组件 -->
     <div v-if="showToast" class="toast">
       {{ toastMessage }}
@@ -144,6 +148,13 @@ export default {
   width: 300px;
   font-size: 25px;
   text-align: center;
+  color: #666;
+}
+
+.footer {
+  margin-top: 25px;
+  font-size: 16px;
+  width: 300px;
   color: #666;
 }
 
