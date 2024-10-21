@@ -4,12 +4,14 @@
       Please select a file to upload or paste the content.
     </div>
     <textarea v-model="textContent" class="textarea" placeholder="Paste your content here"></textarea>
-    <input ref="fileInput" type="file" style="display: none" @change="handleFileUpload"/>
+    <input ref="fileInput" type="file" style="display: none" @change="handleFileUpload" />
     <div v-if="linkAddress" class="link-address">
       <div class="link-address-text">
         {{ linkAddress }}
       </div>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRn3Vx_iNdQ0h1PVB3xS1vomz-nOlbBkJFtx9nQ351QiZHwc3APEU8C7CENvfKQLYAmBr4&usqp=CAU" alt="copy" class="copy-icon" @click="copyLink">
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRn3Vx_iNdQ0h1PVB3xS1vomz-nOlbBkJFtx9nQ351QiZHwc3APEU8C7CENvfKQLYAmBr4&usqp=CAU"
+        alt="copy" class="copy-icon" @click="copyLink">
     </div>
     <button v-else @click="triggerFileUpload" class="upload-button">
       <div v-if="loading" class="ldrs-tail-chase">
@@ -37,7 +39,7 @@ export default {
   data() {
     return {
       loading: false,
-      textContent: '', 
+      textContent: '',
       linkAddress: '', // 上传成功后的链接地址
       showToast: false,
       toastMessage: '',
@@ -61,7 +63,7 @@ export default {
         formData.append('content', this.textContent);
 
         // 使用 fetch 发送 POST 请求到 pastebin 服务
-        const response = await fetch('/upload', {
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://paste.c-net.org/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -87,7 +89,7 @@ export default {
           formData.append('file', file);
 
           // 使用 fetch 上传文件
-          const response = await fetch('/upload', {
+          const response = await fetch('https://cors-anywhere.herokuapp.com/https://paste.c-net.org/', {
             method: 'POST',
             body: formData,
           });
@@ -129,7 +131,7 @@ export default {
 
 </script>
 
-<style scoped>  
+<style scoped>
 .container {
   display: flex;
   flex-direction: column;
