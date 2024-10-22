@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container">
+  <div id="app" class="container" @dragover.prevent @drop.prevent="handleDrop">
     <div class="description">
       Please select a file to upload or paste the content.
     </div>
@@ -27,7 +27,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import { tailChase } from 'ldrs'
@@ -88,26 +87,35 @@ export default {
     async handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {
-        this.loading = true;
-        try {
-          const formData = new FormData();
-          formData.append('file', file);
+        this.uploadFile(file);
+      }
+    },
+    async uploadFile(file) {
+      this.loading = true;
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
 
-          // 使用 fetch 上传文件
-          const response = await fetch('https://cors-anywhere.herokuapp.com/https://paste.c-net.org/', {
-            method: 'POST',
-            body: formData,
-          });
+        // 使用 fetch 上传文件
+        const response = await fetch('https://cors-anywhere.herokuapp.com/https://paste.c-net.org/', {
+          method: 'POST',
+          body: formData,
+        });
 
-          const text = await response.text();
-          this.linkAddress = this.extractLink(text);
-          ElMessage.success('Upload successful');
-        } catch (error) {
-          console.error('Error uploading file:', error);
-          ElMessage.error('Upload failed');
-        } finally {
-          this.loading = false;
-        }
+        const text = await response.text();
+        this.linkAddress = this.extractLink(text);
+        ElMessage.success('Upload successful');
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        ElMessage.error('Upload failed');
+      } finally {
+        this.loading = false;
+      }
+    },
+    handleDrop(event) {
+      const file = event.dataTransfer.files[0];
+      if (file) {
+        this.uploadFile(file);
       }
     },
     extractLink(htmlContent) {
@@ -140,7 +148,6 @@ export default {
     }
   },
 }
-
 </script>
 
 <style scoped>
