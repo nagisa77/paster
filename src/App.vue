@@ -116,14 +116,27 @@ export default {
       return linkMatch ? linkMatch[1] : ''; // 如果匹配到链接则返回，否则返回空字符串
     },
     copyLink() {
-      navigator.clipboard.writeText(this.linkAddress)
-        .then(() => {
+      // 创建一个临时的textarea元素
+      const textarea = document.createElement('textarea');
+      textarea.value = this.linkAddress;
+      document.body.appendChild(textarea);
+      textarea.select();
+      textarea.setSelectionRange(0, 99999); // 对移动端的支持
+
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
           ElMessage.success('Copy successful');
-        })
-        .catch(err => {
-          console.error('Copy failed:', err);
-          ElMessage.error('Copy failed, please copy manually');
-        });
+        } else {
+          throw new Error('Copy command was unsuccessful');
+        }
+      } catch (err) {
+        console.error('Copy failed:', err);
+        ElMessage.error('Copy failed, please copy manually');
+      }
+
+      // 移除临时的textarea元素
+      document.body.removeChild(textarea);
     }
   },
 }
