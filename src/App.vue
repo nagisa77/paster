@@ -25,16 +25,13 @@
     <div class="footer">
       If you can not upload, please allow cors demo <a href="https://cors-anywhere.herokuapp.com/corsdemo">here</a>, and click "Request temporary access to the demo server"
     </div>
-    <!-- 添加 Toast 组件 -->
-    <div v-if="showToast" class="toast">
-      {{ toastMessage }}
-    </div>
   </div>
 </template>
 
 
 <script>
 import { tailChase } from 'ldrs'
+import { ElMessage } from 'element-plus'
 
 tailChase.register()
 
@@ -45,8 +42,6 @@ export default {
       loading: false,
       textContent: '',
       linkAddress: '', // 上传成功后的链接地址
-      showToast: false,
-      toastMessage: '',
     };
   },
   methods: {
@@ -72,14 +67,20 @@ export default {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: new URLSearchParams({ content: this.textContent })
+          body: this.textContent
         });
 
         const text = await response.text();
-        this.showToastMessage('上传成功');
-        this.linkAddress = this.extractLink(text); // 提取链接
+        if (text === '') {
+          ElMessage.error('Upload failed, please refer to the link below');
+        } else {
+          ElMessage.success('Upload successful'); 
+          console.log(text);
+          this.linkAddress = this.extractLink(text); 
+        }
       } catch (error) {
         console.error('Error uploading text content:', error);
+        ElMessage.error('Upload failed'); 
       } finally {
         this.loading = false;
       }
@@ -100,9 +101,10 @@ export default {
 
           const text = await response.text();
           this.linkAddress = this.extractLink(text);
-          this.showToastMessage('上传成功');
+          ElMessage.success('Upload successful');
         } catch (error) {
           console.error('Error uploading file:', error);
+          ElMessage.error('Upload failed');
         } finally {
           this.loading = false;
         }
@@ -113,21 +115,14 @@ export default {
       const linkMatch = htmlContent.match(/<a href="([^"]+)" target="_parent">/);
       return linkMatch ? linkMatch[1] : ''; // 如果匹配到链接则返回，否则返回空字符串
     },
-    showToastMessage(message, duration = 2000) {
-      this.toastMessage = message;
-      this.showToast = true;
-      setTimeout(() => {
-        this.showToast = false;
-      }, duration);
-    },
     copyLink() {
       navigator.clipboard.writeText(this.linkAddress)
         .then(() => {
-          this.showToastMessage('复制成功');
+          ElMessage.success('Copy successful');
         })
         .catch(err => {
-          console.error('复制失败:', err);
-          this.showToastMessage('复制失败，请手动复制');
+          console.error('Copy failed:', err);
+          ElMessage.error('Copy failed, please copy manually');
         });
     }
   },
@@ -195,17 +190,5 @@ export default {
   border-radius: 5px;
   min-height: 100px;
   min-width: 300px;
-}
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 14px;
 }
 </style>
