@@ -121,7 +121,7 @@ export default {
     extractLink(htmlContent) {
       // 使用正则表达式提取 href 中的链接
       const linkMatch = htmlContent.match(/<a href="([^"]+)" target="_parent">/);
-      return linkMatch ? linkMatch[1] : ''; // 如果匹配到链接则返回，否则返回空字符串
+      return linkMatch ? linkMatch[1].replace('https://paste.c-net.org', 'https://chenjiating.com') : ''; // 如果匹配到链接则返回，否则返回空字符串
     },
     copyLink() {
       // 创建一个临时的textarea元素
