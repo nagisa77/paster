@@ -7,7 +7,7 @@
     <input ref="fileInput" type="file" style="display: none" @change="handleFileUpload" />
     <div v-if="linkAddress" class="link-address">
       <div class="link-address-text">
-        {{ linkAddress }}
+        <a :href="linkAddress" target="_blank">{{ linkAddress }}</a>
       </div>
       <img
         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRn3Vx_iNdQ0h1PVB3xS1vomz-nOlbBkJFtx9nQ351QiZHwc3APEU8C7CENvfKQLYAmBr4&usqp=CAU"
@@ -61,7 +61,7 @@ export default {
         formData.append('content', this.textContent);
 
         // 使用 fetch 发送 POST 请求到 pastebin 服务
-        const response = await fetch('https://cors-anywhere.herokuapp.com/https://paste.c-net.org/', {
+        const response = await fetch('http://127.0.0.1:5001/paster-c242e/us-central1/proxyToPasteCNet', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -121,7 +121,11 @@ export default {
     extractLink(htmlContent) {
       // 使用正则表达式提取 href 中的链接
       const linkMatch = htmlContent.match(/<a href="([^"]+)" target="_parent">/);
-      return linkMatch ? linkMatch[1].replace('https://paste.c-net.org', 'https://chenjiating.com/p') : ''; // 如果匹配到链接则返回，否则返回空字符串
+      if (linkMatch) {
+        return linkMatch[1].replace('https://paste.c-net.org', 'https://chenjiating.com/p');
+      } else {
+        return htmlContent.replace('https://paste.c-net.org', 'https://chenjiating.com/p');
+      }
     },
     copyLink() {
       // 创建一个临时的textarea元素
