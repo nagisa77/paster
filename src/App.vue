@@ -61,7 +61,7 @@ export default {
         formData.append('content', this.textContent);
 
         // 使用 fetch 发送 POST 请求到 pastebin 服务
-        const response = await fetch('http://127.0.0.1:5001/paster-c242e/us-central1/proxyToPasteCNet', {
+        const response = await fetch('https://proxytopastecnet-6pc53bwxka-uc.a.run.app', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
